@@ -8,10 +8,13 @@ var http = require('http'),
     mime = require('mime'),
     mnm = require('minimist');
 
-var argv = mnm(process.argv.slice(2)),
-    port = argv.p || 8000,
-    root = argv.r || process.cwd(),
-    fallbackPath = argv.f;
+var _mnm = mnm(process.argv.slice(2));
+
+var _mnm$p = _mnm.p;
+var port = _mnm$p === undefined ? 8000 : _mnm$p;
+var _mnm$r = _mnm.r;
+var root = _mnm$r === undefined ? process.cwd() : _mnm$r;
+var fallbackPath = _mnm.f;
 
 if (fallbackPath) fallbackPath = path.join(root, fallbackPath);
 
