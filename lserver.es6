@@ -6,15 +6,33 @@ const http = require('http')
     , mime = require('mime')
     , mnm  = require('minimist');
 
+    console.dir(http.STATUS_CODES);
+
 const {
-    p: port=8000,
-    r: root=process.cwd(),
-    f: relativeFallback
-    } = mnm(process.argv.slice(2));
+    port=8000,
+    root=process.cwd(),
+    redirect,
+    'fallback-to-root': fallToRoot,
+    fallback: relativeFallback,
+  } = mnm(process.argv.slice(2), {
+    string: ['fallback'],
+    boolean: ['redirect', 'fallback-to-root'],
+    alias: {
+      'x': 'redirect',
+      'r': 'root',
+      'p': 'port',
+      'f': 'fallback',
+      'F': 'fallback-to-root',
+    },
+  });
 
 let fallbackPath;
 
-if (relativeFallback) fallbackPath = path.join(root, relativeFallback);
+if (fallToRoot) {
+  fallbackPath = root;
+} else if (relativeFallback) {
+  fallbackPath = path.join(root, relativeFallback);
+}
 
 http.createServer(function requestHandler(req, res) {
   let uriPath  = url.parse(req.url).pathname,
@@ -30,7 +48,7 @@ http.createServer(function requestHandler(req, res) {
         console.log(`\t\x1b[31mUnable to load \x1b[0m"\x1b[1m${mappedFilePath}\x1b[22m"`);
         if (err.code == 'ENOENT') {
           if (!fallingback && fallbackPath) {
-            console.log(`\t\x1b[35mAttemping to serve \x1b[0m"\x1b[1m${relativeFallback}\x1b[22m"`);
+            console.log(`\t\x1b[35mAttemping to serve \x1b[0m"\x1b[1m${relativeFallback || '/'}\x1b[22m"`);
             return handle(fallbackPath, true);
           }
           res.statusCode = 404;
