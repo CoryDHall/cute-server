@@ -1,6 +1,6 @@
 {
   "name": "cute-server",
-  "version": "0.2.0",
+  "version": "0.2.1-0",
   "description": "Lightweight static web server",
   "main": "qtserver.js",
   "dependencies": {
@@ -11,7 +11,7 @@
     "qtserver": "./qtserver.js"
   },
   "devDependencies": {
-    "babel-preset-es2015":"~6.3.13"
+    "babel-preset-es2015": "~6.3.13"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
