@@ -1,28 +1,39 @@
 {
-  "name": "local-server",
-  "version": "0.1.8",
-  "description": "Static web server",
-  "homepage": "https://github.com/buunguyen/local-server",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:buunguyen/local-server.git"
-  },
-  "bin": {
-    "lserver": "./lserver.js"
-  },
-  "keywords": [
-    "server",
-    "local",
-    "static",
-    "web"
-  ],
+  "name": "cute-server",
+  "version": "0.2.0",
+  "description": "Lightweight static web server",
+  "main": "qtserver.js",
   "dependencies": {
-    "mime": "~1.2.11",
+    "mime": "^1.2.11",
     "minimist": "^0.2.0"
   },
-  "license": "MIT",
+  "bin": {
+    "qtserver": "./qtserver.js"
+  },
+  "devDependencies": {
+    "babel-preset-es2015":"~6.3.13"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "babel qtserver.es6 -o qtserver.js --presets es2015"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoryDHall/cute-server.git"
+  },
+  "keywords": [
+    "static",
+    "local",
+    "server",
+    "web"
+  ],
   "author": {
-    "name": "Buu Nguyen",
-    "email": "buunguyen@gmail.com"
-  }
+    "name": "Cory D.Hall",
+    "email": "corydantehall@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CoryDHall/cute-server/issues"
+  },
+  "homepage": "https://github.com/CoryDHall/cute-server#readme"
 }

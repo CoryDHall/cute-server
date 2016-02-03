@@ -14,11 +14,9 @@
         mime = require('mime'),
         mnm = require('minimist');
 
-    var _mnm = mnm(process.argv.slice(2), {
-      string: ['fallback'],
+    var _mnm = mnm(process.argv.slice(2), { string: ['fallback'],
       boolean: ['redirect', 'fallback-to-root'],
-      alias: {
-        'x': 'redirect',
+      alias: { 'x': 'redirect',
         'r': 'root',
         'p': 'port',
         'f': 'fallback',
@@ -47,38 +45,45 @@
 
       console.log('\n    \u001b[1m' + strDivide() + '\u001b[0m\n    Started Serving "\u001b[1m' + uriPath + '\u001b[22m" at ' + new Date() + ':\n    ' + strDivide());
       console.time('    Served "\u001b[37m\u001b[1m' + uriPath + '\u001b[0m" in');
+
       handle(mappedFilePath);
 
       function handle(filePath, fallingback) {
-        fs.stat(filePath, function (err, stat) {
+        fs.stat(filePath, function returnFile(err, stat) {
           if (err) {
+
             console.log('    \u001b[31mUnable to load \u001b[0m"\u001b[1m' + mappedFilePath + '\u001b[22m"');
+
             if (err.code == 'ENOENT') {
               if (!(fallingback && uriPath !== relativeFallback) && fallbackPath) {
                 var redirectPath = !fallToRoot ? relativeFallback : './';
+
                 if (redirect) {
                   console.log('    \u001b[35mRedirecting to \u001b[0m"\u001b[1m' + redirectPath + '\u001b[22m"');
-                  res.writeHead(308, {
-                    Location: redirectPath
-                  });
+
+                  res.writeHead(308, { Location: redirectPath });
                   res.end();
                   return;
                 } else {
                   console.log('    \u001b[35mAttemping to serve \u001b[0m"\u001b[1m' + redirectPath + '\u001b[22m"');
+
                   return handle(fallbackPath, true);
                 }
               }
               res.statusCode = 404;
             } else res.statusCode = 500;
+
             res.end();
             console.error(err);
           } else if (stat.isDirectory()) {
             handle(path.join(filePath, 'index.html'));
           } else {
             console.time('    Loaded "\u001b[37m\u001b[1m' + filePath + '\u001b[0m" in');
+
             var contentType = mime.lookup(path.extname(filePath));
             res.writeHead(200, { 'Content-Type': contentType });
             fs.createReadStream(filePath).pipe(res);
+
             console.log('    \u001b[36mResponding with \u001b[0m"\u001b[1m' + filePath + '\u001b[22m"\n    ' + strDivide());
             console.timeEnd('    Loaded "\u001b[37m\u001b[1m' + filePath + '\u001b[0m" in');
             console.timeEnd('    Served "\u001b[37m\u001b[1m' + uriPath + '\u001b[0m" in');

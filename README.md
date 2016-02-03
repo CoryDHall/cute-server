@@ -1,29 +1,37 @@
-local-server
+Cute-Server
 ============
 
-Simple static web server.
+Simple static web server forked from __[local-server](https://github.com/buunguyen/local-server)__ by __[Buu Nguyen](https://github.com/buunguyen)__
 
 ### Install
 ```
-npm install local-server -g
+npm install cute-server -g
 ```
 
 ### Usage
 
 ```
-lserver -p [port] -r [root folder] -f [fallback path if not found]
+qtserver -p [port] -r [root folder] -f [fallback path if not found]
 ```
 
-Arguments (all are optional):
 
-* `p`: [`Number`] port number, default to 8000
-* `r`: [`String`] root folder, default to working directory
-* `f`: [`String`] fallback path when page not found, default to not falling back and send 404
+| Arguments (all are optional)    |
+| :------------- | :------------- |
+| `-p, --port: [Number]` | port number, default to 8000|
+| `-r, --root: [String]` | root folder, default to working directory|
+| `-f, --fallback: [String]` | fallback path when page not found, default to not falling back and send 404|
+| `-F, --fallback-to-root` | set the fallback path to the root folder, overrides `-f, --fallback`|
+| `-x, --redirect:` | when page not found issue a redirect response (__off__ by default)|
 
 For example
 ```
-lserver -p 9000 -r ./ -f index.html
-=> Server running at http://localhost:9000/ [root: ./, fallback: index.html]
-```
+qtserver -p 9999 -r ./ -F
+=>
+  ————————————————————————————————————————————————————————————
+  Server running at http://localhost:9999/
+    root: ./
+    fallback: ./
+  ————————————————————————————————————————————————————————————
 
-That's all!
+
+```
