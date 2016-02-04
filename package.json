@@ -8,14 +8,19 @@
     "minimist": "^0.2.0"
   },
   "bin": {
-    "qtserver": "./qtserver.js"
+    "qtserver": "./lib/qtserver.js"
   },
   "devDependencies": {
-    "babel-preset-es2015": "~6.3.13"
+    "babel": "~6.3.13",
+    "babel-preset-es2015": "~6.3.13",
+    "gulp": "~3.9.0",
+    "gulp-download": "~0.0.1",
+    "gulp-util": "~3.0.7",
+    "through": "~2.3.8"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "babel qtserver.es6 -o qtserver.js --presets es2015"
+    "test": "gulp test",
+    "prepublish": "gulp scripts"
   },
   "repository": {
     "type": "git",
