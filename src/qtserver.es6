@@ -6,7 +6,7 @@ const http = require('http')
     , fs   = require('fs')
     , mime = require('mime')
     , mnm  = require('minimist')
-    , out  = require('./server_strings.js')
+    , log  = require('./server_strings.js')()
 
 const { port=8000
       , root=process.cwd()
@@ -36,8 +36,7 @@ http.createServer(function requestHandler(req, res) {
   let uriPath  = url.parse(req.url).pathname
     , mappedFilePath = path.join(root, unescape(uriPath))
 
-  console.log(out('begin', uriPath))
-  console.time(out('serveTimer', uriPath))
+    log.start(uriPath);
 
   handle(mappedFilePath)
 
@@ -45,20 +44,20 @@ http.createServer(function requestHandler(req, res) {
     fs.stat(filePath, function returnFile(err, stat) {
       if (err) {
 
-        console.log(out('loadError', mappedFilePath))
+        log.fail(mappedFilePath)
 
         if (err.code == 'ENOENT') {
           if (!(fallingback && uriPath !== relativeFallback) && fallbackPath) {
             let redirectPath = !fallToRoot ? relativeFallback : './'
 
             if (redirect) {
-              console.log(out('redirect', redirectPath))
+              log.redirect(redirectPath)
 
               res.writeHead(308, { Location: (redirectPath) })
               res.end()
               return
             } else {
-              console.log(out('reattempt', redirectPath))
+              log.attempt(redirectPath)
 
               return handle(fallbackPath, true)
             }
@@ -68,27 +67,23 @@ http.createServer(function requestHandler(req, res) {
         } else res.statusCode = 500
 
         res.end()
-        console.error(err)
+        // console.error(err)
 
       } else if (stat.isDirectory()) {
         handle(path.join(filePath, 'index.html'))
 
       } else {
-        console.time(out('loadTimer', filePath))
+        log.loadStart(filePath)
 
         let contentType = mime.lookup(path.extname(filePath))
         res.writeHead(200, { 'Content-Type': contentType })
         fs.createReadStream(filePath).pipe(res)
 
-        console.log(out('success', filePath))
-        console.timeEnd(out('loadTimer', filePath))
-        console.timeEnd(out('serveTimer', uriPath))
-        console.log(out('procDiv'))
-
+        log.complete(uriPath, filePath)
       }
     })
   }
 }).listen(port)
 
-console.log(out('boot', port, root, fallbackPath))
+log.boot(port, root, fallbackPath)
 }

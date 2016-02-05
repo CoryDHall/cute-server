@@ -44,8 +44,37 @@ const strings = {
   procDiv() {
     return s.base(`${strDivider}
 ${strDivider}\n\n`)
+  },
+}, blocks = {
+  boot(port, root, fallbackPath) {
+    console.log(strings['boot'](port, root, fallbackPath))
+  },
+  start(uriPath) {
+    console.log(strings['begin'](uriPath))
+    console.time(strings['serveTimer'](uriPath))
+  },
+  fail(mappedFilePath) {
+    console.log(strings['loadError'](mappedFilePath))
+  },
+  loadStart(filePath) {
+    console.time(strings['loadTimer'](filePath))
+  },
+  attempt(redirectPath) {
+    console.log(strings['reattempt'](redirectPath))
+  },
+  redirect(redirectPath) {
+    console.log(strings['redirect'](redirectPath))
+  },
+  complete(uriPath, filePath) {
+    console.log(strings['success'](filePath))
+    console.timeEnd(strings['loadTimer'](filePath))
+    console.timeEnd(strings['serveTimer'](uriPath))
+    console.log(strings['procDiv']())
   }
 }
 module.exports = function (templateName,...data) {
+  if (templateName === undefined) {
+    return blocks
+  }
   return strings[templateName](...data)
 }
