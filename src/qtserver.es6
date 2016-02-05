@@ -6,10 +6,17 @@ const http = require('http')
     , fs   = require('fs')
     , mime = require('mime')
     , mnm  = require('minimist')
+    , clc  = require('cli-color')
 
-function strDivide() {
-  return `${new Array(60).fill("—").join('')}`
-}
+const s = { delim: clc.xterm(200).bold
+          , base: clc.xterm(200)
+          , info: clc.xterm(181).bold
+          , error: clc.whiteBright.redBright.bold
+          , warning: clc.whiteBright.yellowBright.bold
+          , success: clc.whiteBright.greenBright.bold
+          , data: clc.xterm(81).bgBlack
+          }
+    , strDivider = clc.move(-10, 0) + new Array(3).fill("—").join('') + '>\t'
 
 const { port=8000
       , root=process.cwd()
@@ -40,10 +47,9 @@ http.createServer(function requestHandler(req, res) {
     , mappedFilePath = path.join(root, unescape(uriPath))
 
   console.log(`
-    \x1b[1m${strDivide()}\x1b[0m
-    Started Serving "\x1b[1m${uriPath}\x1b[22m" at ${new Date()}:
-    ${strDivide()}`)
-  console.time(`    Served "\x1b[37m\x1b[1m${uriPath}\x1b[0m" in`)
+  ${s.base(strDivider)}  Started Serving "${s.data(uriPath)}" at ${s.info(new Date())}:
+`)
+  console.time(`\t\t\t${s.data(strDivider)} to Serve ${s.data(uriPath)}${clc.move.left(100)}`)
 
   handle(mappedFilePath)
 
@@ -51,20 +57,20 @@ http.createServer(function requestHandler(req, res) {
     fs.stat(filePath, function returnFile(err, stat) {
       if (err) {
 
-        console.log(`    \x1b[31mUnable to load \x1b[0m"\x1b[1m${mappedFilePath}\x1b[22m"`)
+        console.log(`${s.error(strDivider)}  Unable to load "${s.data(mappedFilePath)}"`)
 
         if (err.code == 'ENOENT') {
           if (!(fallingback && uriPath !== relativeFallback) && fallbackPath) {
             let redirectPath = !fallToRoot ? relativeFallback : './'
 
             if (redirect) {
-              console.log(`    \x1b[35mRedirecting to \x1b[0m"\x1b[1m${redirectPath}\x1b[22m"`)
+              console.log(`${s.warning(strDivider)}  Redirecting to "${s.data(redirectPath)}"`)
 
               res.writeHead(308, { Location: (redirectPath) })
               res.end()
               return
             } else {
-              console.log(`    \x1b[35mAttemping to serve \x1b[0m"\x1b[1m${redirectPath}\x1b[22m"`)
+              console.log(`${s.warning(strDivider)}  Attemping to serve "${s.data(redirectPath)}"`)
 
               return handle(fallbackPath, true)
             }
@@ -80,29 +86,26 @@ http.createServer(function requestHandler(req, res) {
         handle(path.join(filePath, 'index.html'))
 
       } else {
-        console.time(`    Loaded "\x1b[37m\x1b[1m${filePath}\x1b[0m" in`)
+        console.time(`\t\t\t${s.data(strDivider)} to Load ${s.data(filePath)}${clc.move.left(100)}`)
 
         let contentType = mime.lookup(path.extname(filePath))
         res.writeHead(200, { 'Content-Type': contentType })
         fs.createReadStream(filePath).pipe(res)
 
-        console.log(`    \x1b[36mResponding with \x1b[0m"\x1b[1m${filePath}\x1b[22m"
-    ${strDivide()}`)
-        console.timeEnd(`    Loaded "\x1b[37m\x1b[1m${filePath}\x1b[0m" in`)
-        console.timeEnd(`    Served "\x1b[37m\x1b[1m${uriPath}\x1b[0m" in`)
-        console.log(`    \x1b[1m${strDivide()}
-    ${strDivide()}\x1b[0m\n\n`)
+        console.log(`${s.success(strDivider)}  Responding with "${s.data(filePath)}"\n`)
+        console.timeEnd(`\t\t\t${s.data(strDivider)} to Load ${s.data(filePath)}${clc.move.left(100)}`)
+        console.timeEnd(`\t\t\t${s.data(strDivider)} to Serve ${s.data(uriPath)}${clc.move.left(100)}`)
+        console.log(s.base(`${strDivider}
+  ${strDivider}\n\n`))
 
       }
     })
   }
 }).listen(port)
 
-console.log(`
-  ${strDivide()}
-  \x1b[1mServer running at http://localhost:${port}/
-    root: ${root}
-    fallback: ${fallbackPath}\x1b[22m
-  ${strDivide()}
-`)
+console.log(s.base(`
+  ${strDivider}Server running at:\t${s.data(`http://localhost:${port}/`)}
+  ${strDivider}             root:\t${s.data(root)}
+  ${strDivider}         fallback:\t${s.data(fallbackPath || "NONE")}
+`))
 }
