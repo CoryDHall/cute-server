@@ -20,7 +20,7 @@
     "through": "~2.3.8"
   },
   "scripts": {
-    "test": "gulp test",
+    "test": "qtserver & gulp test; kill $!",
     "prepublish": "gulp scripts"
   },
   "repository": {
