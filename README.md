@@ -8,7 +8,7 @@ Simple static web server forked from __[local-server](https://github.com/buunguy
 npm install cute-server -g
 ```
 
-### Usage
+### CLI Usage
 
 ```
 qtserver -p [port] -r [root folder] -f [fallback path if not found]
@@ -34,4 +34,27 @@ qtserver -p 9999 -r ./ -F
   ————————————————————————————————————————————————————————————
 
 
+```
+### Module Usage
+
+```JavaScript
+const cute = require('cute-server')
+
+let qt = cute.server({port: 9999})
+
+qt.start() //=> 9999
+```
+```
+———>    Cute Server running at:	http://localhost:8000/
+———>                      root:	/Users/cdphall/Work/_web_dev/projects/sand
+———>                  fallback:	NONE
+```
+
+To terminate the server:
+```JavaScript
+cute.kill(9999)
+```
+or
+```JavaScript
+qt.end()
 ```
