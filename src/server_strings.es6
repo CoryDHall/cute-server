@@ -13,9 +13,9 @@ const s = { delim: clc.xterm(200).bold
 const strings = {
   boot(port, root, fallbackPath) {
     return s.base(`
-      ${strDivider}Server running at:\t${s.data(`http://localhost:${port}/`)}
-      ${strDivider}             root:\t${s.data(root)}
-      ${strDivider}         fallback:\t${s.data(fallbackPath || "NONE")}
+      ${strDivider}Cute Server running at:\t${s.data(`http://localhost:${port}/`)}
+      ${strDivider}                  root:\t${s.data(root)}
+      ${strDivider}              fallback:\t${s.data(fallbackPath || "NONE")}
       `)
   },
   begin(uriPath) {

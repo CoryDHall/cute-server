@@ -2,14 +2,14 @@
   "name": "cute-server",
   "version": "0.2.1",
   "description": "Lightweight static web server",
-  "main": "qtserver.js",
+  "main": "lib/qtserver.js",
   "dependencies": {
     "mime": "^1.2.11",
     "minimist": "^0.2.0",
     "cli-color": "^1.1.0"
   },
   "bin": {
-    "qtserver": "./lib/qtserver.js"
+    "qtserver": "./index.js"
   },
   "devDependencies": {
     "babel": "~6.3.13",
@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "qtserver & gulp test; kill $!",
-    "prepublish": "gulp scripts"
+    "prepublish": ""
   },
   "repository": {
     "type": "git",

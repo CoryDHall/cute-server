@@ -1,16 +1,23 @@
 var gulp = require('gulp')
   , babel = require('gulp-babel')
-  , col = require('gulp-util').colors
+  , gutil = require('gulp-util')
+  , col = gutil.colors
   , through = require('through')
+  , plumber = require('gulp-plumber')
   , fs = require('fs')
   , download = require('gulp-download');
 
 var path = 'src/**/*.es6';
 
 gulp.task('transpile', function () {
-  return gulp.src(path)
-    .pipe(babel())
-    .pipe(gulp.dest('lib'));
+  var stream = gulp.src(path)
+                .pipe(babel())
+                .pipe(plumber(function(err) {
+                  gutil.log(err.message);
+                  this.emit('end');
+                }))
+                .pipe(gulp.dest('lib'));
+  return stream;
 });
 
 gulp.task('watch', function () {
